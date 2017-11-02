@@ -77,5 +77,20 @@ namespace PWGen
             Clipboard.SetText(output.Text);
             error.Text = "Passwort wurde in die Zwischenablage kopiert!";
         }
+
+        private void empty_Click(object sender, RoutedEventArgs e)
+        {
+            pw1.Text = "";
+            pw2.Text = "";
+            seed.Text = "";
+            error.Text = "";
+            output.Text = "";
+            length.Text = "10";
+            name.Text = "";
+            gb.IsChecked = true;
+            kb.IsChecked = true;
+            sz.IsChecked = true;
+            z.IsChecked = true;
+        }
     }
 }
