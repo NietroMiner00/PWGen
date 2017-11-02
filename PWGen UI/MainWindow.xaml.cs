@@ -21,6 +21,7 @@ namespace PWGen
     public partial class MainWindow : Window
     {
         Generator g = new Generator();
+        public static SortedList<string, Passwort> list = new SortedList<string, Passwort>();
 
         public MainWindow()
         {
@@ -91,6 +92,33 @@ namespace PWGen
             kb.IsChecked = true;
             sz.IsChecked = true;
             z.IsChecked = true;
+        }
+
+        private void add_Click(object sender, RoutedEventArgs e)
+        {
+            if (!name.Text.Equals("") && !passwords.Items.Contains(name.Text))
+            {
+                list.Add(name.Text, new Passwort(pw1.Text, pw2.Text, Int32.Parse(seed.Text), output.Text, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
+                passwords.Items.Add(name.Text);
+            }
+            else if (!name.Text.Equals(""))
+            {
+                list.Remove(name.Text);
+                list.Add(name.Text, new Passwort(pw1.Text, pw2.Text, Int32.Parse(seed.Text), output.Text, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
+            }
+        }
+
+        private void copy2_Click(object sender, RoutedEventArgs e)
+        {
+            Passwort pw = Passwort.Empty;
+            if(list.TryGetValue(passwords.SelectedItem.ToString(), out pw))
+                Clipboard.SetText(pw.Output);
+        }
+
+        private void del_Click(object sender, RoutedEventArgs e)
+        {
+            list.Remove(passwords.SelectedItem.ToString());
+            passwords.Items.Remove(passwords.SelectedItem.ToString());
         }
     }
 }
