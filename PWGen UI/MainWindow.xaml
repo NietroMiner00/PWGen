@@ -38,11 +38,11 @@
             <CheckBox x:Name="z" Content="Zahlen" HorizontalAlignment="Left" Margin="135,76,0,0" VerticalAlignment="Top" IsChecked="True"/>
             <TextBox x:Name="length" HorizontalAlignment="Left" Height="22" Margin="184,100,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="23" TextAlignment="Center"/>
             <Label Content="Länge:" HorizontalAlignment="Left" Margin="135,96,0,0" VerticalAlignment="Top"/>
-            <Button x:Name="empty" Content="Felder leeren" HorizontalAlignment="Left" Margin="135,127,0,0" VerticalAlignment="Top" Width="100" Click="empty_Click"/>
+            <Button x:Name="empty" Content="Neu" HorizontalAlignment="Left" Margin="135,127,0,0" VerticalAlignment="Top" Width="100" Click="empty_Click"/>
         </Grid>
-        <Grid x:Name="PasswoerterPanel" Margin="115,0,10,0" Background="White">
+        <Grid x:Name="PasswoerterPanel" Margin="115,0,10,0" Background="White" Visibility="Hidden">
             <ListBox x:Name="passwords" HorizontalAlignment="Left" Margin="10,10,0,10" Width="178"/>
-            <Button x:Name="edit" Content="Bearbeiten" HorizontalAlignment="Left" Margin="193,10,0,0" VerticalAlignment="Top" Width="100"/>
+            <Button x:Name="edit" Content="Bearbeiten" HorizontalAlignment="Left" Margin="193,10,0,0" VerticalAlignment="Top" Width="100" Click="edit_Click"/>
             <Button x:Name="copy2" Content="Kopieren" HorizontalAlignment="Left" Margin="193,35,0,0" VerticalAlignment="Top" Width="100" Click="copy2_Click"/>
             <Button x:Name="del" Content="Löschen" HorizontalAlignment="Left" Margin="193,60,0,0" VerticalAlignment="Top" Width="100" Click="del_Click"/>
             <Button x:Name="up" Content="Hoch schieben" HorizontalAlignment="Left" Margin="193,85,0,0" VerticalAlignment="Top" Width="100"/>

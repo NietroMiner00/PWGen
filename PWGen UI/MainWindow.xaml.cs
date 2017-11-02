@@ -106,6 +106,7 @@ namespace PWGen
                 list.Remove(name.Text);
                 list.Add(name.Text, new Passwort(pw1.Text, pw2.Text, Int32.Parse(seed.Text), output.Text, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
             }
+            mypws_Click(null, null);
         }
 
         private void copy2_Click(object sender, RoutedEventArgs e)
@@ -119,6 +120,27 @@ namespace PWGen
         {
             list.Remove(passwords.SelectedItem.ToString());
             passwords.Items.Remove(passwords.SelectedItem.ToString());
+        }
+
+        private void edit_Click(object sender, RoutedEventArgs e)
+        {
+            Passwort pw;
+            if (passwords.SelectedItem != null)
+            {
+                list.TryGetValue(passwords.SelectedItem.ToString(), out pw);
+                pw1.Text = pw.Pw1;
+                pw2.Text = pw.Pw2;
+                seed.Text = "" + pw.Seed;
+                output.Text = pw.Output;
+                length.Text = "" + pw.Output.Length;
+                gb.IsChecked = pw.Options[0];
+                kb.IsChecked = pw.Options[1];
+                sz.IsChecked = pw.Options[2];
+                z.IsChecked = pw.Options[3];
+                name.Text = passwords.SelectedItem.ToString();
+                error.Text = "";
+            }
+            create_Click(null, null);
         }
     }
 }
