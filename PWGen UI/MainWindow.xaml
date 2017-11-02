@@ -25,18 +25,18 @@
             <Label Content="Startwert:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="60" Margin="10,118,0,0"/>
             <TextBox x:Name="seed" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,144,0,0"/>
             <Label Content="Neues Passwort:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="104" Margin="10,172,0,0"/>
-            <TextBox x:Name="seed_Copy" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,198,0,0"/>
-            <Button x:Name="start" Content="Generieren" HorizontalAlignment="Left" Margin="248,176,0,0" VerticalAlignment="Top" Width="100"/>
+            <TextBox x:Name="output" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,198,0,0"/>
+            <Button x:Name="start" Content="Generieren" HorizontalAlignment="Left" Margin="248,176,0,0" VerticalAlignment="Top" Width="100" Click="start_Click"/>
             <Button x:Name="copy1" Content="Kopieren" HorizontalAlignment="Left" Margin="248,201,0,0" VerticalAlignment="Top" Width="100"/>
             <Button x:Name="add" Content="Hinzufügen" HorizontalAlignment="Left" Margin="248,64,0,0" VerticalAlignment="Top" Width="100"/>
             <TextBox x:Name="name" HorizontalAlignment="Left" Margin="248,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" Height="23"/>
             <Label Content="Name:" HorizontalAlignment="Left" Margin="248,10,0,0" VerticalAlignment="Top"/>
-            <TextBlock HorizontalAlignment="Left" Margin="248,90,0,0" TextWrapping="Wrap" Text="Errors" VerticalAlignment="Top" Height="81" Width="100"/>
-            <CheckBox Content="Großbuchstaben" HorizontalAlignment="Left" Margin="135,16,0,0" VerticalAlignment="Top"/>
-            <CheckBox Content="Kleinbuchstaben" HorizontalAlignment="Left" Margin="135,36,0,0" VerticalAlignment="Top"/>
-            <CheckBox Content="Sonderzeichen" HorizontalAlignment="Left" Margin="135,56,0,0" VerticalAlignment="Top"/>
-            <CheckBox Content="Zahlen" HorizontalAlignment="Left" Margin="135,76,0,0" VerticalAlignment="Top"/>
-            <TextBox HorizontalAlignment="Left" Height="22" Margin="184,100,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="23" TextAlignment="Center"/>
+            <TextBlock x:Name="error" HorizontalAlignment="Left" Margin="248,90,0,0" TextWrapping="Wrap" Text="Errors" VerticalAlignment="Top" Height="81" Width="100"/>
+            <CheckBox x:Name="gb" Content="Großbuchstaben" HorizontalAlignment="Left" Margin="135,16,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="kb" Content="Kleinbuchstaben" HorizontalAlignment="Left" Margin="135,36,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="sz" Content="Sonderzeichen" HorizontalAlignment="Left" Margin="135,56,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="z" Content="Zahlen" HorizontalAlignment="Left" Margin="135,76,0,0" VerticalAlignment="Top"/>
+            <TextBox x:Name="length" HorizontalAlignment="Left" Height="22" Margin="184,100,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="23" TextAlignment="Center"/>
             <Label Content="Länge:" HorizontalAlignment="Left" Margin="135,96,0,0" VerticalAlignment="Top"/>
             <Button x:Name="empty" Content="Felder leeren" HorizontalAlignment="Left" Margin="135,127,0,0" VerticalAlignment="Top" Width="100"/>
         </Grid>

@@ -20,6 +20,7 @@ namespace PWGen
     /// </summary>
     public partial class MainWindow : Window
     {
+        Generator g = new Generator();
 
         public MainWindow()
         {
@@ -36,6 +37,35 @@ namespace PWGen
         {
             ErstellenPanel.Visibility = Visibility.Visible;
             PasswoerterPanel.Visibility = Visibility.Hidden;
+        }
+
+        private void start_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(g.setGB(gb.IsChecked.HasValue) &&
+                g.setKB(kb.IsChecked.HasValue) &&
+                g.setSZ(sz.IsChecked.HasValue) &&
+                g.setZ(z.IsChecked.HasValue)))
+            {
+                if (output.Text.Equals("")) copy1.IsEnabled = false;
+                error.Text = "";
+                error.Text = "Es muss mindestens eine Checkbox ausgewählt sein!";
+            }
+            else
+            {
+                try
+                {
+                    if (Int32.Parse(length.Text) > 30) throw new FormatException();
+                    output.Text = g.generate(pw1.Text, pw2.Text, Int32.Parse(seed.Text), Int32.Parse(length.Text));
+                    error.Text = "";
+                    copy1.IsEnabled = true;
+                }
+                catch (FormatException er)
+                {
+                    if (output.Text.Equals("")) copy1.IsEnabled = false;
+                    error.Text = "";
+                    error.Text = "Generierung nicht möglich aufgrund eines Formatierfehlers. Bitte sorgen sie dafür, dass der Startwert und die Länge(bis 30) Zahlen sind!";
+                }
+            }
         }
     }
 }
