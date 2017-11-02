@@ -27,7 +27,7 @@
             <Label Content="Neues Passwort:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="104" Margin="10,172,0,0"/>
             <TextBox x:Name="output" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,198,0,0"/>
             <Button x:Name="start" Content="Generieren" HorizontalAlignment="Left" Margin="248,176,0,0" VerticalAlignment="Top" Width="100" Click="start_Click"/>
-            <Button x:Name="copy1" Content="Kopieren" HorizontalAlignment="Left" Margin="248,201,0,0" VerticalAlignment="Top" Width="100"/>
+            <Button x:Name="copy1" Content="Kopieren" HorizontalAlignment="Left" Margin="248,201,0,0" VerticalAlignment="Top" Width="100" Click="copy_Click"/>
             <Button x:Name="add" Content="Hinzufügen" HorizontalAlignment="Left" Margin="248,64,0,0" VerticalAlignment="Top" Width="100"/>
             <TextBox x:Name="name" HorizontalAlignment="Left" Margin="248,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" Height="23"/>
             <Label Content="Name:" HorizontalAlignment="Left" Margin="248,10,0,0" VerticalAlignment="Top"/>

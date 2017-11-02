@@ -9,7 +9,7 @@ namespace PWGen{
 
     public class Generator{
 
-	    Random r;
+	    PWGen.Random r;
 	    char[] chars;
 	    bool sz = true;
 	    bool z = true;
@@ -56,7 +56,7 @@ namespace PWGen{
 			
 		    }
 		    if(pw1.Equals("")&&pw2.Equals("")) r = new Random((int)currentTimeMillis);
-		    else r = new Random(seed);
+		    else r = new PWGen.Random(seed);
 		    for(int i = 0; i < length;i++){
 			    chars[i] = (char)r.next(32);
 			    for(int x = 0; x < Math.Abs(r.next(32)); x++){

@@ -41,10 +41,14 @@ namespace PWGen
 
         private void start_Click(object sender, RoutedEventArgs e)
         {
-            if (!(g.setGB(gb.IsChecked.HasValue) &&
-                g.setKB(kb.IsChecked.HasValue) &&
-                g.setSZ(sz.IsChecked.HasValue) &&
-                g.setZ(z.IsChecked.HasValue)))
+            g.setGB(gb.IsChecked.Value);
+            g.setKB(kb.IsChecked.Value);
+            g.setSZ(sz.IsChecked.Value);
+            g.setZ(z.IsChecked.Value);
+            if (!g.setGB(gb.IsChecked.Value) &&
+                !g.setKB(kb.IsChecked.Value) &&
+                !g.setSZ(sz.IsChecked.Value) &&
+                !g.setZ(z.IsChecked.Value))
             {
                 if (output.Text.Equals("")) copy1.IsEnabled = false;
                 error.Text = "";
@@ -66,6 +70,12 @@ namespace PWGen
                     error.Text = "Generierung nicht möglich aufgrund eines Formatierfehlers. Bitte sorgen sie dafür, dass der Startwert und die Länge(bis 30) Zahlen sind!";
                 }
             }
+        }
+
+        private void copy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(output.Text);
+            error.Text = "Passwort wurde in die Zwischenablage kopiert!";
         }
     }
 }
