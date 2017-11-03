@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PWGen_UI"
         mc:Ignorable="d"
-        Title="PWGen" Height="271.647" Width="491.41" ResizeMode="CanMinimize" Background="White" Topmost="True">
+        Title="PWGen" Height="271.647" Width="491.41" ResizeMode="CanMinimize" Background="White" Topmost="True" Closing="Window_Closing">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -15,7 +15,7 @@
         </Grid.ColumnDefinitions>
         <Menu HorizontalAlignment="Left" Width="110" Background="White">
             <MenuItem x:Name="create" Width="110" Height="33" Header="Passwort erstellen" Click="create_Click"/>
-            <MenuItem x:Name="mypws" Height="34" Width="110" Header="Mein Passwörter" Click="mypws_Click"/>
+            <MenuItem x:Name="mypws" Height="34" Width="110" Header="Meine Passwörter" Click="mypws_Click"/>
         </Menu>
         <Grid x:Name="ErstellenPanel" Margin="115,0,10,0">
             <Label Content="Passwort 1:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="69" RenderTransformOrigin="0.748,0.577" Margin="10,10,0,0"/>
@@ -48,6 +48,5 @@
             <Button x:Name="up" Content="Hoch schieben" HorizontalAlignment="Left" Margin="193,85,0,0" VerticalAlignment="Top" Width="100"/>
             <Button x:Name="down" Content="Runter schieben" HorizontalAlignment="Left" Margin="193,110,0,0" VerticalAlignment="Top" Width="100"/>
         </Grid>
-
     </Grid>
 </Window>

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PWGen_UI;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,10 +24,15 @@ namespace PWGen
     {
         Generator g = new Generator();
         public static SortedList<string, Passwort> list = new SortedList<string, Passwort>();
+        int passwort = 0;
+        string passwordDir = Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\PWGen\\";
+        string passwordFile = "passwords.bin";
+        bool temp = true;
 
         public MainWindow()
         {
             InitializeComponent();
+            load(passwordDir + passwordFile);
         }
 
         private void mypws_Click(object sender, RoutedEventArgs e)
@@ -106,6 +113,7 @@ namespace PWGen
                 list.Remove(name.Text);
                 list.Add(name.Text, new Passwort(pw1.Text, pw2.Text, Int32.Parse(seed.Text), output.Text, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
             }
+            save();
             mypws_Click(null, null);
         }
 
@@ -141,6 +149,111 @@ namespace PWGen
                 error.Text = "";
             }
             create_Click(null, null);
+        }
+
+        private void save()
+        {
+            string pwstr = "";
+            if (!temp)
+            {
+                bool ok = InputBox.Input("Geb dein Masterpasswort ein:", out pwstr);
+                while (ok && (pwstr.GetHashCode() != this.passwort && this.passwort != 0))
+                    ok = InputBox.Input("Geb dein Masterpasswort ein:", out pwstr);
+                if (ok && (pwstr.GetHashCode() == this.passwort || this.passwort == 0))
+                {
+                    if (!System.IO.Directory.Exists(passwordDir)) System.IO.Directory.CreateDirectory(passwordDir);
+                    FileStream fs = new FileStream(passwordDir + passwordFile, FileMode.Create);
+                    BinaryWriter bw = new BinaryWriter(fs);
+                    bw.Write("PWGenFile");
+                    for (int i = 0; i < passwords.Items.Count; i++)
+                    {
+                        Passwort pw;
+                        list.TryGetValue(passwords.Items[i].ToString(), out pw);
+                        bw.Write(AESEncryption.Encrypt(passwords.Items[i].ToString(), pwstr));
+                        bw.Write(AESEncryption.Encrypt(pw.Pw1, pwstr));
+                        bw.Write(AESEncryption.Encrypt(pw.Pw2, pwstr));
+                        bw.Write(AESEncryption.Encrypt("" + pw.Seed, pwstr));
+                        bw.Write(AESEncryption.Encrypt(pw.Output, pwstr));
+                        bw.Write(AESEncryption.Encrypt("" + pw.Options[0], pwstr));
+                        bw.Write(AESEncryption.Encrypt("" + pw.Options[1], pwstr));
+                        bw.Write(AESEncryption.Encrypt("" + pw.Options[2], pwstr));
+                        bw.Write(AESEncryption.Encrypt("" + pw.Options[3], pwstr));
+                    }
+                    bw.Write("!?!");
+                    bw.Close();
+                }
+                else
+                {
+                    error.Text = "Falsches Passwort!";
+                }
+            }
+            else
+            {
+                error.Text = "Temporäre Session aktiviert! Passwörter können nicht gespeichert werden!";
+            }
+        }
+
+        private void load(string file)
+        {
+            if (System.IO.File.Exists(file))
+            {
+                FileStream fs1 = new FileStream(file, FileMode.Open);
+                BinaryReader br = new BinaryReader(fs1);
+                if (br.ReadString().Equals("PWGenFile"))
+                {
+                    string pwstr = "";
+                    bool ok = false;
+                    long startPosition = fs1.Position;
+                    while (true)
+                    {
+                        ok = InputBox.Input("Geb dein Masterpasswort ein:", out pwstr);
+                        if (ok)
+                        {
+                            this.passwort = pwstr.GetHashCode();
+                            string name = br.ReadString();
+                            try
+                            {
+                                while (!name.Equals("!?!"))
+                                {
+                                    Passwort pw = new Passwort(AESEncryption.Decrypt(br.ReadString(), pwstr),
+                                        AESEncryption.Decrypt(br.ReadString(), pwstr),
+                                        Int32.Parse(AESEncryption.Decrypt(br.ReadString(), pwstr)),
+                                        AESEncryption.Decrypt(br.ReadString(), pwstr),
+                                        Boolean.Parse(AESEncryption.Decrypt(br.ReadString(), pwstr)),
+                                        Boolean.Parse(AESEncryption.Decrypt(br.ReadString(), pwstr)),
+                                        Boolean.Parse(AESEncryption.Decrypt(br.ReadString(), pwstr)),
+                                        Boolean.Parse(AESEncryption.Decrypt(br.ReadString(), pwstr)));
+                                    list.Add(AESEncryption.Decrypt(name, pwstr), pw);
+                                    passwords.Items.Add(AESEncryption.Decrypt(name, pwstr));
+
+                                    temp = false;
+                                    name = br.ReadString();
+                                }
+                                error.Text = "";
+                                break;
+                            }
+                            catch (Exception e)
+                            {
+                                error.Text = "Falsches Passwort! Temporäre Session aktiviert! Passwörter können nicht gespeichert werden!";
+                                fs1.Position = startPosition;
+                            }
+                        }
+                        else
+                        {
+                            error.Text = "Temporäre Session aktiviert! Passwörter können nicht gespeichert werden!";
+                            break;
+                        }
+                    }
+                }
+                fs1.Close();
+            }
+            else temp = false;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //save();
+            e.Cancel = false;
         }
     }
 }
