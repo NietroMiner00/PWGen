@@ -9,7 +9,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -28,11 +30,48 @@ namespace PWGen
         string passwordDir = Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\PWGen\\";
         string passwordFile = "passwords.bin";
         bool temp = true;
+        NotifyIcon notifyIcon = new NotifyIcon();
+        System.Windows.Forms.ContextMenu cm = new System.Windows.Forms.ContextMenu();
+        System.Windows.Forms.MenuItem mExit = new System.Windows.Forms.MenuItem();
+        System.Windows.Forms.MenuItem mShow = new System.Windows.Forms.MenuItem();
+        System.Windows.Forms.MenuItem mMini = new System.Windows.Forms.MenuItem();
+        static CloseReason closeReason = CloseReason.UserClosing;
 
         public MainWindow()
         {
+            Loaded += delegate
+            {
+                HwndSource source = (HwndSource)PresentationSource.FromDependencyObject(this);
+                source.AddHook(WindowProc);
+            };
             InitializeComponent();
             load(passwordDir + passwordFile);
+            notifyIcon.Icon = new System.Drawing.Icon("ic_launcher.ico");
+            notifyIcon.Visible = true;
+            notifyIcon.Text = "PWGen";
+            notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(notifyIcon_MouseDoubleClick);
+        }
+
+        private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                case 0x11:
+                case 0x16:
+                    closeReason = CloseReason.WindowsShutDown;
+                    break;
+
+                case 0x112:
+                    if ((LOWORD((int)wParam) & 0xfff0) == 0xf060)
+                        closeReason = CloseReason.UserClosing;
+                    break;
+            }
+            return IntPtr.Zero;
+        }
+
+        private static int LOWORD(int n)
+        {
+            return (n & 0xffff);
         }
 
         private void mypws_Click(object sender, RoutedEventArgs e)
@@ -82,7 +121,7 @@ namespace PWGen
 
         private void copy_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(output.Text);
+            System.Windows.Clipboard.SetText(output.Text);
             error.Text = "Passwort wurde in die Zwischenablage kopiert!";
         }
 
@@ -121,7 +160,7 @@ namespace PWGen
         {
             Passwort pw = Passwort.Empty;
             if(list.TryGetValue(passwords.SelectedItem.ToString(), out pw))
-                Clipboard.SetText(pw.Output);
+                System.Windows.Clipboard.SetText(pw.Output);
         }
 
         private void del_Click(object sender, RoutedEventArgs e)
@@ -250,10 +289,25 @@ namespace PWGen
             else temp = false;
         }
 
+        bool firstClose = true;
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //save();
-            e.Cancel = false;
+            if (closeReason == CloseReason.UserClosing)
+            {
+                this.Hide();
+                e.Cancel = true;
+                if (firstClose)
+                {
+                    firstClose = false;
+                }
+            }
+        }
+
+        public void notifyIcon_MouseDoubleClick(object sender, EventArgs e)
+        {
+            Show();
+            if (WindowState == WindowState.Minimized)
+                WindowState = WindowState.Normal;
         }
     }
 }

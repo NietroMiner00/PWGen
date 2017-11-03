@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PWGen_UI"
         mc:Ignorable="d"
-        Title="PWGen" Height="133.404" Width="195.126" Topmost="True" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="PWGen" Height="133.404" Width="195.126" Topmost="True" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" WindowStyle="ToolWindow">
     <Grid>
         <Label x:Name="text" Content="Passwort eingeben:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
         <Button x:Name="ok" Content="Ok" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="ok_Click"/>
