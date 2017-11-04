@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PWGen_UI"
         mc:Ignorable="d"
-        Title="PWGen" Height="133.404" Width="195.126" Topmost="True" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" WindowStyle="ToolWindow">
+        Title="PWGen" Height="137" Width="305" Topmost="True" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" WindowStyle="ToolWindow">
     <Grid>
-        <Label x:Name="text" Content="Passwort eingeben:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
-        <Button x:Name="ok" Content="Ok" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="ok_Click"/>
-        <TextBox x:Name="input" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155" ForceCursor="True"/>
-        <Button Content="Abbrechen" HorizontalAlignment="Left" Margin="90,64,0,0" VerticalAlignment="Top" Width="75" IsCancel="True"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <PasswordBox x:Name="input" Height="23" Margin="10,36,10,0" VerticalAlignment="Top"/>
+        <Label x:Name="text" Content="Passwort eingeben:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <Button x:Name="ok" Content="Ok" Margin="0,64,90,10" IsDefault="True" Click="ok_Click" HorizontalAlignment="Right" Width="75"/>
+        <Button Content="Abbrechen" Margin="0,64,10,10" IsCancel="True" HorizontalAlignment="Right" Width="75"/>
 
     </Grid>
 </Window>

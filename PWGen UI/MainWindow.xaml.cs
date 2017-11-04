@@ -97,7 +97,7 @@ namespace PWGen
                 !g.setSZ(sz.IsChecked.Value) &&
                 !g.setZ(z.IsChecked.Value))
             {
-                if (output.Text.Equals("")) copy1.IsEnabled = false;
+                if (output.Password.Equals("")) copy1.IsEnabled = false;
                 error.Text = "";
                 error.Text = "Es muss mindestens eine Checkbox ausgewählt sein!";
             }
@@ -106,13 +106,13 @@ namespace PWGen
                 try
                 {
                     if (Int32.Parse(length.Text) > 30) throw new FormatException();
-                    output.Text = g.generate(pw1.Text, pw2.Text, Int32.Parse(seed.Text), Int32.Parse(length.Text));
+                    output.Password = g.generate(pw1.Password, pw2.Password, Int32.Parse(seed.Text), Int32.Parse(length.Text));
                     error.Text = "";
                     copy1.IsEnabled = true;
                 }
                 catch (FormatException er)
                 {
-                    if (output.Text.Equals("")) copy1.IsEnabled = false;
+                    if (output.Password.Equals("")) copy1.IsEnabled = false;
                     error.Text = "";
                     error.Text = "Generierung nicht möglich aufgrund eines Formatierfehlers. Bitte sorgen sie dafür, dass der Startwert und die Länge(bis 30) Zahlen sind!";
                 }
@@ -121,17 +121,17 @@ namespace PWGen
 
         private void copy_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Clipboard.SetText(output.Text);
+            System.Windows.Clipboard.SetText(output.Password);
             error.Text = "Passwort wurde in die Zwischenablage kopiert!";
         }
 
         private void empty_Click(object sender, RoutedEventArgs e)
         {
-            pw1.Text = "";
-            pw2.Text = "";
+            pw1.Password = "";
+            pw2.Password = "";
             seed.Text = "";
             error.Text = "";
-            output.Text = "";
+            output.Password = "";
             length.Text = "10";
             name.Text = "";
             gb.IsChecked = true;
@@ -144,13 +144,13 @@ namespace PWGen
         {
             if (!name.Text.Equals("") && !passwords.Items.Contains(name.Text))
             {
-                list.Add(name.Text, new Passwort(pw1.Text, pw2.Text, Int32.Parse(seed.Text), output.Text, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
+                list.Add(name.Text, new Passwort(pw1.Password, pw2.Password, Int32.Parse(seed.Text), output.Password, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
                 passwords.Items.Add(name.Text);
             }
             else if (!name.Text.Equals(""))
             {
                 list.Remove(name.Text);
-                list.Add(name.Text, new Passwort(pw1.Text, pw2.Text, Int32.Parse(seed.Text), output.Text, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
+                list.Add(name.Text, new Passwort(pw1.Password, pw2.Password, Int32.Parse(seed.Text), output.Password, gb.IsChecked.Value, kb.IsChecked.Value, sz.IsChecked.Value, z.IsChecked.Value));
             }
             save();
             mypws_Click(null, null);
@@ -175,10 +175,10 @@ namespace PWGen
             if (passwords.SelectedItem != null)
             {
                 list.TryGetValue(passwords.SelectedItem.ToString(), out pw);
-                pw1.Text = pw.Pw1;
-                pw2.Text = pw.Pw2;
+                pw1.Password = pw.Pw1;
+                pw2.Password = pw.Pw2;
                 seed.Text = "" + pw.Seed;
-                output.Text = pw.Output;
+                output.Password = pw.Output;
                 length.Text = "" + pw.Output.Length;
                 gb.IsChecked = pw.Options[0];
                 kb.IsChecked = pw.Options[1];
@@ -308,6 +308,22 @@ namespace PWGen
             Show();
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!vis.IsChecked.Value)
+            {
+                pw1.PasswordChar = '●';
+                pw2.PasswordChar = '●';
+                output.PasswordChar = '●';
+            }
+            else
+            {
+                pw1.PasswordChar = char.MinValue;
+                pw2.PasswordChar = char.MinValue;
+                output.PasswordChar = char.MinValue;
+            }
         }
     }
 }

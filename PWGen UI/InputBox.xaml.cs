@@ -24,6 +24,7 @@ namespace PWGen_UI
         public InputBox()
         {
             InitializeComponent();
+            input.Focus();
         }
 
         public static bool Input(string text, out string output)
@@ -33,7 +34,7 @@ namespace PWGen_UI
             i.ShowDialog();
             if (i.okB)
             {
-                output = i.input.Text;
+                output = i.input.Password;
                 return true;
             }
             else output = "";

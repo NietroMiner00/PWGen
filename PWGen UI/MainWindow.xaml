@@ -19,13 +19,13 @@
         </Menu>
         <Grid x:Name="ErstellenPanel" Margin="115,0,10,0">
             <Label Content="Passwort 1:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="69" RenderTransformOrigin="0.748,0.577" Margin="10,10,0,0"/>
-            <TextBox x:Name="pw1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,36,0,0"/>
+            <PasswordBox x:Name="pw1" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="10,36,0,0"/>
             <Label Content="Passwort 2:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="69" Margin="10,64,0,0"/>
-            <TextBox x:Name="pw2" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,90,0,0"/>
+            <PasswordBox x:Name="pw2" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="10,90,0,0"/>
             <Label Content="Startwert:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="60" Margin="10,118,0,0"/>
-            <TextBox x:Name="seed" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,144,0,0"/>
+            <TextBox x:Name="seed" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="10,144,0,0"/>
             <Label Content="Neues Passwort:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="104" Margin="10,172,0,0"/>
-            <TextBox x:Name="output" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="10,198,0,0"/>
+            <PasswordBox x:Name="output" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="10,198,0,0"/>
             <Button x:Name="start" Content="Generieren" HorizontalAlignment="Left" Margin="248,176,0,0" VerticalAlignment="Top" Width="100" Click="start_Click"/>
             <Button x:Name="copy1" Content="Kopieren" HorizontalAlignment="Left" Margin="248,201,0,0" VerticalAlignment="Top" Width="100" Click="copy_Click"/>
             <Button x:Name="add" Content="Hinzufügen" HorizontalAlignment="Left" Margin="248,64,0,0" VerticalAlignment="Top" Width="100" Click="add_Click"/>
@@ -39,6 +39,7 @@
             <TextBox x:Name="length" HorizontalAlignment="Left" Height="22" Margin="184,100,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="23" TextAlignment="Center"/>
             <Label Content="Länge:" HorizontalAlignment="Left" Margin="135,96,0,0" VerticalAlignment="Top"/>
             <Button x:Name="empty" Content="Neu" HorizontalAlignment="Left" Margin="135,127,0,0" VerticalAlignment="Top" Width="100" Click="empty_Click"/>
+            <CheckBox x:Name="vis" Content="Passwörter anzeigen" HorizontalAlignment="Left" Margin="136,152,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
         </Grid>
         <Grid x:Name="PasswoerterPanel" Margin="115,0,10,0" Background="White" Visibility="Hidden">
             <ListBox x:Name="passwords" HorizontalAlignment="Left" Margin="10,10,0,10" Width="178"/>
