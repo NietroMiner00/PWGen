@@ -351,16 +351,26 @@ namespace PWGen
         {
             if (!vis.IsChecked.Value)
             {
-                pw1.PasswordChar = '●';
-                pw2.PasswordChar = '●';
-                output.PasswordChar = '●';
+                pw1_vis.Visibility = Visibility.Hidden;
+                pw2_vis.Visibility = Visibility.Hidden;
+                output_vis.Visibility = Visibility.Hidden;
             }
             else
             {
-                pw1.PasswordChar = char.MinValue;
-                pw2.PasswordChar = char.MinValue;
-                output.PasswordChar = char.MinValue;
+                pw1_vis.Visibility = Visibility.Visible;
+                pw2_vis.Visibility = Visibility.Visible;
+                output_vis.Visibility = Visibility.Visible;
+                pw1_vis.Text = pw1.Password;
+                pw2_vis.Text = pw2.Password;
+                output_vis.Text = output.Password;
             }
+        }
+
+        private void PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(sender.Equals(pw1_vis)) pw1.Password = pw1_vis.Text;
+            if(sender.Equals(pw2_vis)) pw2.Password = pw2_vis.Text;
+            if(sender.Equals(output_vis)) output.Password = output_vis.Text;
         }
     }
 }
