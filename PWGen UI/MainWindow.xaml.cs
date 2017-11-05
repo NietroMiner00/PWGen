@@ -36,20 +36,41 @@ namespace PWGen
         System.Windows.Forms.MenuItem mShow = new System.Windows.Forms.MenuItem();
         System.Windows.Forms.MenuItem mMini = new System.Windows.Forms.MenuItem();
         static CloseReason closeReason = CloseReason.UserClosing;
+        Mini miniForm;
 
         public MainWindow()
         {
-            Loaded += delegate
-            {
-                HwndSource source = (HwndSource)PresentationSource.FromDependencyObject(this);
-                source.AddHook(WindowProc);
-            };
             InitializeComponent();
             load(passwordDir + passwordFile);
             notifyIcon.Icon = new System.Drawing.Icon("ic_launcher.ico");
             notifyIcon.Visible = true;
             notifyIcon.Text = "PWGen";
             notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(notifyIcon_MouseDoubleClick);
+            this.notifyIcon.ContextMenu = this.cm;
+
+            this.cm.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mShow, this.mMini, this.mExit});
+
+            this.mShow.Index = 0;
+            this.mShow.Text = "Anzeigen";
+            this.mShow.Click += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
+
+            // 
+            // mMini
+            // 
+            this.mMini.Index = 1;
+            this.mMini.Text = "Mini";
+            this.mMini.Checked = true;
+            this.mMini.Click += new System.EventHandler(this.mMini_Click);
+
+            // 
+            // mExit
+            // 
+            this.mExit.Index = 2;
+            this.mExit.Text = "Beenden";
+            this.mExit.Click += new System.EventHandler(this.mExit_Click);
+
+            miniForm = new Mini(this);
         }
 
         private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -300,6 +321,7 @@ namespace PWGen
                 {
                     firstClose = false;
                 }
+                if (mMini.Checked) miniForm.Show();
             }
         }
 
@@ -308,6 +330,21 @@ namespace PWGen
             Show();
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;
+        }
+
+        private void mExit_Click(object sender, System.EventArgs e)
+        {
+            closeReason = CloseReason.WindowsShutDown;
+            Close();
+            miniForm.Close();
+            notifyIcon.Visible = false;
+        }
+
+        public void mMini_Click(object sender, EventArgs e)
+        {
+            mMini.Checked = !mMini.Checked;
+            if (!mMini.Checked) miniForm.Hide();
+            else miniForm.Show();
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
