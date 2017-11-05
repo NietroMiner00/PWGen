@@ -188,6 +188,7 @@ namespace PWGen
         {
             list.Remove(passwords.SelectedItem.ToString());
             passwords.Items.Remove(passwords.SelectedItem.ToString());
+            save();
         }
 
         private void edit_Click(object sender, RoutedEventArgs e)
@@ -251,6 +252,7 @@ namespace PWGen
             {
                 error.Text = "Temporäre Session aktiviert! Passwörter können nicht gespeichert werden!";
             }
+            miniForm.Load();
         }
 
         private void load(string file)
@@ -371,6 +373,9 @@ namespace PWGen
             if(sender.Equals(pw1_vis)) pw1.Password = pw1_vis.Text;
             if(sender.Equals(pw2_vis)) pw2.Password = pw2_vis.Text;
             if(sender.Equals(output_vis)) output.Password = output_vis.Text;
+            if (sender.Equals(pw1)) pw1_vis.Text = pw1.Password;
+            if (sender.Equals(pw2)) pw2_vis.Text = pw2.Password;
+            if (sender.Equals(output)) output_vis.Text = output.Password;
         }
     }
 }

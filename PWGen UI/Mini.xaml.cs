@@ -26,6 +26,12 @@ namespace PWGen
             InitializeComponent();
             Left = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width - 250;
             Top = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height - 100;
+            Load();
+        }
+
+        public void Load()
+        {
+            this.comboBox1.Items.Clear();
             foreach (string i in MainWindow.list.Keys)
             {
                 this.comboBox1.Items.Add(i);
