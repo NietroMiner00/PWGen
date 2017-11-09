@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,10 +39,28 @@ namespace PWGen
         System.Windows.Forms.MenuItem mMini = new System.Windows.Forms.MenuItem();
         static CloseReason closeReason = CloseReason.UserClosing;
         Mini miniForm;
+        static Mutex mutex = new Mutex(true, "{8F6F0AC4-B9A1-45fd-A8CF-72F04E6BDE8F}");
 
         public MainWindow()
         {
+            Loaded += delegate
+            {
+                HwndSource source = (HwndSource)PresentationSource.FromDependencyObject(this);
+                source.AddHook(WindowProc);
+            };
             InitializeComponent();
+            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                NativeMethods.PostMessage(
+                    (IntPtr)NativeMethods.HWND_BROADCAST,
+                    NativeMethods.WM_SHOWME,
+                    IntPtr.Zero,
+                    IntPtr.Zero);
+                closeReason = CloseReason.WindowsShutDown;
+                Close();
+                return;
+            }
+            mutex.ReleaseMutex();
             load(passwordDir + passwordFile);
             notifyIcon.Icon = new System.Drawing.Icon("ic_launcher.ico");
             notifyIcon.Visible = true;
@@ -73,19 +93,11 @@ namespace PWGen
             miniForm = new Mini(this);
         }
 
-        private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            switch (msg)
+            if (msg == NativeMethods.WM_SHOWME)
             {
-                case 0x11:
-                case 0x16:
-                    closeReason = CloseReason.WindowsShutDown;
-                    break;
-
-                case 0x112:
-                    if ((LOWORD((int)wParam) & 0xfff0) == 0xf060)
-                        closeReason = CloseReason.UserClosing;
-                    break;
+                notifyIcon_MouseDoubleClick(null, null);
             }
             return IntPtr.Zero;
         }
@@ -386,6 +398,16 @@ namespace PWGen
             if (sender.Equals(pw1) && !vis.IsChecked.Value) pw1_vis.Text = pw1.Password;
             if (sender.Equals(pw2) && !vis.IsChecked.Value) pw2_vis.Text = pw2.Password;
             if (sender.Equals(output) && !vis.IsChecked.Value) output_vis.Text = output.Password;
+        }
+
+        internal class NativeMethods
+        {
+            public const int HWND_BROADCAST = 0xffff;
+            public static readonly int WM_SHOWME = RegisterWindowMessage("WM_SHOWME");
+            [DllImport("user32")]
+            public static extern bool PostMessage(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam);
+            [DllImport("user32")]
+            public static extern int RegisterWindowMessage(string message);
         }
     }
 }
