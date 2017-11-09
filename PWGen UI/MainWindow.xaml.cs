@@ -175,6 +175,7 @@ namespace PWGen
             }
             save();
             mypws_Click(null, null);
+            reload();
         }
 
         private void copy2_Click(object sender, RoutedEventArgs e)
@@ -226,11 +227,10 @@ namespace PWGen
                     FileStream fs = new FileStream(passwordDir + passwordFile, FileMode.Create);
                     BinaryWriter bw = new BinaryWriter(fs);
                     bw.Write("PWGenFile");
-                    for (int i = 0; i < passwords.Items.Count; i++)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        Passwort pw;
-                        list.TryGetValue(passwords.Items[i].ToString(), out pw);
-                        bw.Write(AESEncryption.Encrypt(passwords.Items[i].ToString(), pwstr));
+                        Passwort pw = list.ElementAt(i).Value;
+                        bw.Write(AESEncryption.Encrypt(list.ElementAt(i).Key, pwstr));
                         bw.Write(AESEncryption.Encrypt(pw.Pw1, pwstr));
                         bw.Write(AESEncryption.Encrypt(pw.Pw2, pwstr));
                         bw.Write(AESEncryption.Encrypt("" + pw.Seed, pwstr));
@@ -312,6 +312,15 @@ namespace PWGen
             else temp = false;
         }
 
+        public void reload()
+        {
+            passwords.Items.Clear();
+            for (int i = 0; i < list.Count; i++)
+            {
+                passwords.Items.Add(list.ElementAt(i).Key);
+            }
+        }
+
         bool firstClose = true;
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -332,6 +341,7 @@ namespace PWGen
             Show();
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;
+            miniForm.Hide();
         }
 
         private void mExit_Click(object sender, System.EventArgs e)
@@ -370,12 +380,12 @@ namespace PWGen
 
         private void PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if(sender.Equals(pw1_vis)) pw1.Password = pw1_vis.Text;
-            if(sender.Equals(pw2_vis)) pw2.Password = pw2_vis.Text;
-            if(sender.Equals(output_vis)) output.Password = output_vis.Text;
-            if (sender.Equals(pw1)) pw1_vis.Text = pw1.Password;
-            if (sender.Equals(pw2)) pw2_vis.Text = pw2.Password;
-            if (sender.Equals(output)) output_vis.Text = output.Password;
+            if(sender.Equals(pw1_vis)&&vis.IsChecked.Value) pw1.Password = pw1_vis.Text;
+            if(sender.Equals(pw2_vis) && vis.IsChecked.Value) pw2.Password = pw2_vis.Text;
+            if(sender.Equals(output_vis) && vis.IsChecked.Value) output.Password = output_vis.Text;
+            if (sender.Equals(pw1) && !vis.IsChecked.Value) pw1_vis.Text = pw1.Password;
+            if (sender.Equals(pw2) && !vis.IsChecked.Value) pw2_vis.Text = pw2.Password;
+            if (sender.Equals(output) && !vis.IsChecked.Value) output_vis.Text = output.Password;
         }
     }
 }
