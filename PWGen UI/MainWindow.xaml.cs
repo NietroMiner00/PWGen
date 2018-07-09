@@ -1,23 +1,14 @@
 ﻿using PWGen_UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.Windows;
+using System.Windows.Forms;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PWGen
 {
@@ -33,47 +24,37 @@ namespace PWGen
         string passwordFile = "passwords.bin";
         bool temp = true;
         NotifyIcon notifyIcon = new NotifyIcon();
-        System.Windows.Forms.ContextMenu cm = new System.Windows.Forms.ContextMenu();
-        System.Windows.Forms.MenuItem mExit = new System.Windows.Forms.MenuItem();
-        System.Windows.Forms.MenuItem mShow = new System.Windows.Forms.MenuItem();
-        System.Windows.Forms.MenuItem mMini = new System.Windows.Forms.MenuItem();
+        ContextMenu cm = new ContextMenu();
+        MenuItem mExit = new MenuItem();
+        MenuItem mShow = new MenuItem();
+        MenuItem mMini = new MenuItem();
         static CloseReason closeReason = CloseReason.UserClosing;
         Mini miniForm;
-        static Mutex mutex = new Mutex(true, "{8F6F0AC4-B9A1-45fd-A8CF-72F04E6BDE8F}");
+        Thread tester;
 
         public MainWindow()
         {
-            Loaded += delegate
+            Process[] pname = Process.GetProcessesByName("pwgen");
+            if (pname.Length != 1)
             {
-                HwndSource source = (HwndSource)PresentationSource.FromDependencyObject(this);
-                source.AddHook(WindowProc);
-            };
-            InitializeComponent();
-            if (!mutex.WaitOne(TimeSpan.Zero, true))
-            {
-                NativeMethods.PostMessage(
-                    (IntPtr)NativeMethods.HWND_BROADCAST,
-                    NativeMethods.WM_SHOWME,
-                    IntPtr.Zero,
-                    IntPtr.Zero);
-                closeReason = CloseReason.WindowsShutDown;
                 Close();
+                Console.WriteLine(pname.Length);
                 return;
             }
-            mutex.ReleaseMutex();
+            InitializeComponent();
             load(passwordDir + passwordFile);
             notifyIcon.Icon = new System.Drawing.Icon("ic_launcher.ico");
             notifyIcon.Visible = true;
             notifyIcon.Text = "PWGen";
-            notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(notifyIcon_MouseDoubleClick);
+            notifyIcon.MouseDoubleClick += new MouseEventHandler(notifyIcon_MouseDoubleClick);
             this.notifyIcon.ContextMenu = this.cm;
 
-            this.cm.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.cm.MenuItems.AddRange(new MenuItem[] {
             this.mShow, this.mMini, this.mExit});
 
             this.mShow.Index = 0;
             this.mShow.Text = "Anzeigen";
-            this.mShow.Click += new System.EventHandler(this.notifyIcon_MouseDoubleClick);
+            this.mShow.Click += new EventHandler(this.notifyIcon_MouseDoubleClick);
 
             // 
             // mMini
@@ -91,20 +72,21 @@ namespace PWGen
             this.mExit.Click += new System.EventHandler(this.mExit_Click);
 
             miniForm = new Mini(this);
+
+            tester = new Thread(TestForOtherProgramm);
+            tester.Start();
         }
 
-        private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        private void TestForOtherProgramm()
         {
-            if (msg == NativeMethods.WM_SHOWME)
+            while (true)
             {
-                notifyIcon_MouseDoubleClick(null, null);
+                Process[] pname = Process.GetProcessesByName("pwgen");
+                if (pname.Length != 1)
+                {
+                    this.Dispatcher.BeginInvoke((Action)(() => notifyIcon_MouseDoubleClick(null, null)));
+                }
             }
-            return IntPtr.Zero;
-        }
-
-        private static int LOWORD(int n)
-        {
-            return (n & 0xffff);
         }
 
         private void mypws_Click(object sender, RoutedEventArgs e)
@@ -338,6 +320,7 @@ namespace PWGen
         {
             if (closeReason == CloseReason.UserClosing)
             {
+                WindowState = WindowState.Minimized;
                 this.Hide();
                 e.Cancel = true;
                 if (firstClose)
@@ -346,6 +329,7 @@ namespace PWGen
                 }
                 if (mMini.Checked) miniForm.Show();
             }
+            else tester.Abort();
         }
 
         public void notifyIcon_MouseDoubleClick(object sender, EventArgs e)
@@ -400,14 +384,13 @@ namespace PWGen
             if (sender.Equals(output) && !vis.IsChecked.Value) output_vis.Text = output.Password;
         }
 
-        internal class NativeMethods
+        private void Window_StateChanged(object sender, EventArgs e)
         {
-            public const int HWND_BROADCAST = 0xffff;
-            public static readonly int WM_SHOWME = RegisterWindowMessage("WM_SHOWME");
-            [DllImport("user32")]
-            public static extern bool PostMessage(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam);
-            [DllImport("user32")]
-            public static extern int RegisterWindowMessage(string message);
+            if(WindowState == WindowState.Normal)
+            {
+                Show();
+            }
+            Console.WriteLine(WindowState.ToString());
         }
     }
 }

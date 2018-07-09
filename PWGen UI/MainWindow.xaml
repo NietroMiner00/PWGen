@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PWGen_UI"
         mc:Ignorable="d"
-        Title="PWGen" Height="271.647" Width="491.41" ResizeMode="CanMinimize" Background="White" Topmost="True" Closing="Window_Closing"  Icon="ic_launcher.ico">
+        Title="PWGen" Height="271.647" Width="491.41" ResizeMode="CanMinimize" Background="White" Topmost="True" Closing="Window_Closing" StateChanged="Window_StateChanged" Icon="ic_launcher.ico">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition/>
