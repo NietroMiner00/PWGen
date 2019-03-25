@@ -81,7 +81,7 @@ namespace PWGen
             byte[] CipherTextBytes = Convert.FromBase64String(CipherText);
             PasswordDeriveBytes DerivedPassword = new PasswordDeriveBytes(Password, SaltValueBytes, HashAlgorithm, PasswordIterations);
             byte[] KeyBytes = DerivedPassword.GetBytes(KeySize / 8);
-            RijndaelManaged SymmetricKey = new RijndaelManaged();
+            var SymmetricKey = new AesCryptoServiceProvider(); //RijndaelManaged SymmetricKey = new RijndaelManaged();
             SymmetricKey.Mode = CipherMode.CBC;
             byte[] PlainTextBytes = new byte[CipherTextBytes.Length];
             int ByteCount = 0;
