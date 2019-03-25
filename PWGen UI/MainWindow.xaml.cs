@@ -28,6 +28,7 @@ namespace PWGen
         Mini miniForm;
         Thread tester;
         Options opt;
+        Passwort recent;
 
         public MainWindow()
         {
@@ -44,6 +45,7 @@ namespace PWGen
             opt = new Options();
             opt.loadOptions();
 
+            recent = new Passwort("", "", 0, "", true, true, true, true);
 
             load(opt.PassDir + opt.PassFile);
 
@@ -386,26 +388,41 @@ namespace PWGen
                 pw1_vis.Visibility = Visibility.Hidden;
                 pw2_vis.Visibility = Visibility.Hidden;
                 output_vis.Visibility = Visibility.Hidden;
+                pw1.Password = recent.Pw1;
+                pw2.Password = recent.Pw2;
+                output.Password = recent.Output;
             }
             else
             {
                 pw1_vis.Visibility = Visibility.Visible;
                 pw2_vis.Visibility = Visibility.Visible;
                 output_vis.Visibility = Visibility.Visible;
-                pw1_vis.Text = pw1.Password;
-                pw2_vis.Text = pw2.Password;
-                output_vis.Text = output.Password;
+                pw1_vis.Text = recent.Pw1;
+                pw2_vis.Text = recent.Pw2;
+                output_vis.Text = recent.Output;
             }
         }
 
         private void PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if(sender.Equals(pw1_vis)&&vis.IsChecked.Value) pw1.Password = pw1_vis.Text;
-            if(sender.Equals(pw2_vis) && vis.IsChecked.Value) pw2.Password = pw2_vis.Text;
-            if(sender.Equals(output_vis) && vis.IsChecked.Value) output.Password = output_vis.Text;
-            if (sender.Equals(pw1) && !vis.IsChecked.Value) pw1_vis.Text = pw1.Password;
-            if (sender.Equals(pw2) && !vis.IsChecked.Value) pw2_vis.Text = pw2.Password;
-            if (sender.Equals(output) && !vis.IsChecked.Value) output_vis.Text = output.Password;
+            if(sender.Equals(pw1_vis)) recent.Pw1 = pw1_vis.Text;
+            if(sender.Equals(pw2_vis)) recent.Pw2 = pw2_vis.Text;
+            if(sender.Equals(output_vis)) recent.Output = output_vis.Text;
+            if (sender.Equals(pw1))
+            {
+                recent.Pw1 = pw1.Password;
+                pw1_vis.Text = recent.Pw1;
+            }
+            if (sender.Equals(pw2))
+            {
+                recent.Pw2 = pw2.Password;
+                pw2_vis.Text = recent.Pw2;
+            }
+            if (sender.Equals(output))
+            {
+                recent.Output = output.Password;
+                output_vis.Text = recent.Output;
+            }
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
