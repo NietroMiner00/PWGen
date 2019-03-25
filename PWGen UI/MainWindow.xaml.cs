@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PWGen
 {
@@ -20,8 +18,6 @@ namespace PWGen
         Generator g = new Generator();
         public static SortedList<string, Passwort> list = new SortedList<string, Passwort>();
         int passwort = 0;
-        string passwordDir = Environment.GetEnvironmentVariable("userprofile") + "\\Documents\\PWGen\\";
-        string passwordFile = "passwords.bin";
         bool temp = true;
         NotifyIcon notifyIcon = new NotifyIcon();
         ContextMenu cm = new ContextMenu();
@@ -31,6 +27,7 @@ namespace PWGen
         static CloseReason closeReason = CloseReason.UserClosing;
         Mini miniForm;
         Thread tester;
+        Options opt;
 
         public MainWindow()
         {
@@ -41,9 +38,16 @@ namespace PWGen
                 Console.WriteLine(pname.Length);
                 return;
             }
+
             InitializeComponent();
-            load(passwordDir + passwordFile);
-            notifyIcon.Icon = new System.Drawing.Icon("ic_launcher.ico");
+
+            opt = new Options();
+            opt.loadOptions();
+
+
+            load(opt.PassDir + opt.PassFile);
+
+            notifyIcon.Icon = new System.Drawing.Icon(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\" + "ic_launcher.ico");
             notifyIcon.Visible = true;
             notifyIcon.Text = "PWGen";
             notifyIcon.MouseDoubleClick += new MouseEventHandler(notifyIcon_MouseDoubleClick);
@@ -61,7 +65,8 @@ namespace PWGen
             // 
             this.mMini.Index = 1;
             this.mMini.Text = "Mini";
-            this.mMini.Checked = true;
+            this.mMini.Checked = opt.ShowMini;
+            this.showMiniOption.IsChecked = opt.ShowMini;
             this.mMini.Click += new System.EventHandler(this.mMini_Click);
 
             // 
@@ -72,6 +77,8 @@ namespace PWGen
             this.mExit.Click += new System.EventHandler(this.mExit_Click);
 
             miniForm = new Mini(this);
+
+            pathInput.Text = opt.PassDir;
 
             tester = new Thread(TestForOtherProgramm);
             tester.Start();
@@ -93,12 +100,21 @@ namespace PWGen
         {
             PasswoerterPanel.Visibility = Visibility.Visible;
             ErstellenPanel.Visibility = Visibility.Hidden;
+            optionsPanel.Visibility = Visibility.Hidden;
         }
 
         private void create_Click(object sender, RoutedEventArgs e)
         {
             ErstellenPanel.Visibility = Visibility.Visible;
             PasswoerterPanel.Visibility = Visibility.Hidden;
+            optionsPanel.Visibility = Visibility.Hidden;
+        }
+
+        private void options_Click(object sender, RoutedEventArgs e)
+        {
+            PasswoerterPanel.Visibility = Visibility.Hidden;
+            ErstellenPanel.Visibility = Visibility.Hidden;
+            optionsPanel.Visibility = Visibility.Visible;
         }
 
         private void start_Click(object sender, RoutedEventArgs e)
@@ -217,8 +233,8 @@ namespace PWGen
                     ok = InputBox.Input("Geb dein Masterpasswort ein:", out pwstr);
                 if (ok && (pwstr.GetHashCode() == this.passwort || this.passwort == 0))
                 {
-                    if (!System.IO.Directory.Exists(passwordDir)) System.IO.Directory.CreateDirectory(passwordDir);
-                    FileStream fs = new FileStream(passwordDir + passwordFile, FileMode.Create);
+                    if (!System.IO.Directory.Exists(opt.PassDir)) System.IO.Directory.CreateDirectory(opt.PassDir);
+                    FileStream fs = new FileStream(opt.PassDir + opt.PassFile, FileMode.Create);
                     BinaryWriter bw = new BinaryWriter(fs);
                     bw.Write("PWGenFile");
                     for (int i = 0; i < list.Count; i++)
@@ -269,6 +285,12 @@ namespace PWGen
                             string name = br.ReadString();
                             try
                             {
+                                //Clear in case of reload
+                                if(list.Count > 0||passwords.Items.Count > 0)
+                                {
+                                    list.Clear();
+                                    passwords.Items.Clear();
+                                }
                                 while (!name.Equals("!?!"))
                                 {
                                     Passwort pw = new Passwort(AESEncryption.Decrypt(br.ReadString(), pwstr),
@@ -327,7 +349,7 @@ namespace PWGen
                 {
                     firstClose = false;
                 }
-                if (mMini.Checked) miniForm.Show();
+                if (opt.ShowMini) miniForm.Show();
             }
             else tester.Abort();
         }
@@ -350,8 +372,10 @@ namespace PWGen
 
         public void mMini_Click(object sender, EventArgs e)
         {
-            mMini.Checked = !mMini.Checked;
-            if (!mMini.Checked) miniForm.Hide();
+            opt.ShowMini = !opt.ShowMini;
+            mMini.Checked = opt.ShowMini;
+            showMiniOption.IsChecked = opt.ShowMini;
+            if (!opt.ShowMini) miniForm.Hide();
             else miniForm.Show();
         }
 
@@ -391,6 +415,52 @@ namespace PWGen
                 Show();
             }
             Console.WriteLine(WindowState.ToString());
+        }
+
+        private void searchPath_Click(object sender, RoutedEventArgs e)
+        {
+            //Change Password Directory
+            FolderBrowserDialog openFileDialog = new FolderBrowserDialog();
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //Add "\\"
+                if (!openFileDialog.SelectedPath.EndsWith("\\")) openFileDialog.SelectedPath += "\\";
+
+                //Migrate old file
+                DialogResult dialogResult = System.Windows.Forms.MessageBox.Show("Willst du deine Passwörter zum neuen Ort migrieren?", "Migrieren", MessageBoxButtons.YesNo);
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    if(File.Exists(openFileDialog.SelectedPath + opt.PassFile))
+                    {
+                        //Overwrite Dialog
+                        DialogResult overwriteResult = System.Windows.Forms.MessageBox.Show("Willst du die vorhandene Datei überschreiben?", "Überschreiben", MessageBoxButtons.YesNo);
+                        if (overwriteResult == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            File.Copy(opt.PassDir + opt.PassFile, openFileDialog.SelectedPath + opt.PassFile, true);
+                        }
+                    }
+                    else
+                        File.Copy(opt.PassDir + opt.PassFile, openFileDialog.SelectedPath + opt.PassFile);
+                }
+                else if (dialogResult == System.Windows.Forms.DialogResult.Abort)
+                {
+                    return;
+                }
+
+                //change Path
+                pathInput.Text = openFileDialog.SelectedPath;
+                opt.PassDir = openFileDialog.SelectedPath;
+                load(opt.PassDir + opt.PassFile);
+            }
+        }
+
+        private void showMiniOption_Checked(object sender, RoutedEventArgs e)
+        {
+            if (opt != null)
+            {
+                opt.ShowMini = showMiniOption.IsChecked.Value;
+                mMini.Checked = opt.ShowMini;
+            }
         }
     }
 }

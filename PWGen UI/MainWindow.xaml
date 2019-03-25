@@ -16,8 +16,9 @@
         <Menu HorizontalAlignment="Left" Width="110" Background="White">
             <MenuItem x:Name="create" Width="110" Height="33" Header="Passwort erstellen" Click="create_Click"/>
             <MenuItem x:Name="mypws" Height="34" Width="110" Header="Meine Passwörter" Click="mypws_Click"/>
+            <MenuItem x:Name="options" Height="34" Width="110" Header="Optionen" Click="options_Click"/>
         </Menu>
-        <Grid x:Name="ErstellenPanel" Margin="115,0,10,0">
+        <Grid x:Name="ErstellenPanel" Margin="115,0,10,0" d:IsHidden="True" Visibility="Hidden">
             <Label Content="Passwort 1:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="69" RenderTransformOrigin="0.748,0.577" Margin="10,10,0,0"/>
             <PasswordBox x:Name="pw1" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="10,36,0,0" PasswordChanged="PasswordChanged"/>
             <TextBox x:Name="pw1_vis" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="10,36,0,0" Visibility="Hidden" TextChanged="PasswordChanged"/>
@@ -44,13 +45,19 @@
             <Button x:Name="empty" Content="Neu" HorizontalAlignment="Left" Margin="135,127,0,0" VerticalAlignment="Top" Width="100" Click="empty_Click"/>
             <CheckBox x:Name="vis" Content="Passwörter anzeigen" HorizontalAlignment="Left" Margin="136,152,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
         </Grid>
-        <Grid x:Name="PasswoerterPanel" Margin="115,0,10,0" Background="White" Visibility="Hidden">
+        <Grid x:Name="PasswoerterPanel" Margin="115,0,10,0" Background="White">
             <ListBox x:Name="passwords" HorizontalAlignment="Left" Margin="10,10,0,10" Width="178"/>
             <Button x:Name="edit" Content="Bearbeiten" HorizontalAlignment="Left" Margin="193,10,0,0" VerticalAlignment="Top" Width="100" Click="edit_Click"/>
             <Button x:Name="copy2" Content="Kopieren" HorizontalAlignment="Left" Margin="193,35,0,0" VerticalAlignment="Top" Width="100" Click="copy2_Click"/>
             <Button x:Name="del" Content="Löschen" HorizontalAlignment="Left" Margin="193,60,0,0" VerticalAlignment="Top" Width="100" Click="del_Click"/>
             <Button x:Name="up" Content="Hoch schieben" HorizontalAlignment="Left" Margin="193,85,0,0" VerticalAlignment="Top" Width="100"/>
             <Button x:Name="down" Content="Runter schieben" HorizontalAlignment="Left" Margin="193,110,0,0" VerticalAlignment="Top" Width="100"/>
+        </Grid>
+        <Grid x:Name="optionsPanel" Margin="110,0,10,0" Visibility="Hidden" d:IsHidden="True">
+            <Label Content="Speicherpfad" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+            <TextBox x:Name="pathInput" HorizontalAlignment="Left" Height="23" Margin="94,13,0,0" Text="Path" VerticalAlignment="Top" Width="164" IsEnabled="False"/>
+            <Button x:Name="searchPath" Content="Durchsuchen" HorizontalAlignment="Left" Margin="263,13,0,0" VerticalAlignment="Top" Width="92" Height="23" Click="searchPath_Click"/>
+            <CheckBox x:Name="showMiniOption" Content="Zeige Mini-Oberfläche" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" IsChecked="True" Checked="showMiniOption_Checked"/>
         </Grid>
     </Grid>
 </Window>
