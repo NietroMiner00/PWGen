@@ -95,6 +95,7 @@ namespace PWGen
                 {
                     this.Dispatcher.BeginInvoke((Action)(() => notifyIcon_MouseDoubleClick(null, null)));
                 }
+                Thread.Sleep(100);
             }
         }
 
